@@ -1,0 +1,15 @@
+spring:
+    application:
+        name: hackathon
+    ai:
+        azure:
+            openai:
+                api-key: ea910fce7f814ae98f6235bbae5ab426
+                endpoint: https://genaihack.openai.azure.com/
+                chat:
+                    options:
+                        deployment-name: gpt-35-turbo
+
+                embedding:
+                    options:
+                        model: text-embedding-ada-002
