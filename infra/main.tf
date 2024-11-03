@@ -10,12 +10,14 @@ provider "azurerm" {
   tenant_id       = "14959973-6dc1-48e6-90d0-4fe0b15e2cec"
 }
 
+# Create a new resource group for everything required for the hack
 resource "azurerm_resource_group" "neon-genaihack" {
   name     = "neon-resources"
   location = "East US 2"
 }
 
 
+# Create a new cognitive account for all the Open AI Services
 resource "azurerm_cognitive_account" "neon-account" {
   name                = "neon-account-2"
   location            = azurerm_resource_group.neon-genaihack.location
@@ -29,6 +31,7 @@ resource "azurerm_cognitive_account" "neon-account" {
   }
 }
 
+# Create a new deployment for GPT-4
 resource "azurerm_cognitive_deployment" "neon-gpt-4" {
   name                 = "neon-gpt-4"
   cognitive_account_id = azurerm_cognitive_account.neon-account.id
@@ -41,4 +44,76 @@ resource "azurerm_cognitive_deployment" "neon-gpt-4" {
   sku {
     name = "GlobalStandard"
   }
+}
+
+#Create a new deployment for text-embedding-ada-002
+resource "azurerm_cognitive_deployment" "embedding-model" {
+  name                 = "embedding-model"
+  cognitive_account_id = azurerm_cognitive_account.neon-account.id
+  model {
+    format  = "OpenAI"
+    name    = "text-embedding-ada-002"
+    version = "2"
+  }
+
+  sku {
+    name = "Standard"
+  }
+}
+
+
+#Create cosmosdb account
+resource "azurerm_cosmosdb_account" "neon-cosmosdb" {
+  name                = "neon-cosmosdb"
+  location            = azurerm_resource_group.neon-genaihack.location
+  resource_group_name = azurerm_resource_group.neon-genaihack.name
+  offer_type          = "Standard"
+  kind                = "GlobalDocumentDB"
+
+  consistency_policy {
+    consistency_level = "Session"
+  }
+
+  capabilities {
+    name = "EnableNoSQLVectorSearch" # Enables vector search capability
+  }
+
+  geo_location {
+    location          = azurerm_resource_group.neon-genaihack.location
+    failover_priority = 0
+  }
+}
+
+#Create cosmosdb database
+resource "azurerm_cosmosdb_sql_database" "neon-cosmosdb-database" {
+  name                = "neon-cosmosdb-database"
+  resource_group_name = azurerm_resource_group.neon-genaihack.name
+  account_name        = azurerm_cosmosdb_account.neon-cosmosdb.name
+}
+
+#Create cosmosdb container
+resource "azurerm_cosmosdb_sql_container" "neon-cosmosb-container" {
+  name                = "neon-cosmosb-container"
+  resource_group_name = azurerm_resource_group.neon-genaihack.name
+  account_name        = azurerm_cosmosdb_account.neon-cosmosdb.name
+  database_name       = azurerm_cosmosdb_sql_database.neon-cosmosdb-database.name
+  partition_key_paths  = ["/codeChunk"] # Partition based on codeChunk
+
+  indexing_policy {
+    indexing_mode = "consistent"
+  }
+
+  unique_key {
+    paths = ["/chunkId"]
+  }
+}
+
+# Output the CosmosDB endpoint and primary key
+output "cosmosdb_endpoint" {
+  value = azurerm_cosmosdb_account.neon-cosmosdb.endpoint
+}
+
+output "cosmosdb_primary_key" {
+  value     = azurerm_cosmosdb_account.neon-cosmosdb.primary_key
+  sensitive = true
 }

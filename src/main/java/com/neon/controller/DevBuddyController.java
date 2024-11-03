@@ -1,6 +1,6 @@
 package com.neon.controller;
 
-import com.neon.service.CodeIndexService;
+import com.neon.index.CodeEmbeddingService;
 import org.springframework.ai.client.AiClient;
 import org.springframework.ai.client.Generation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ public class DevBuddyController {
 
 
     private final AiClient aiClient;
-    private final CodeIndexService bikeService;
+    private final CodeEmbeddingService bikeService;
 
    // private final AzureOpenAiChatModel chatModel;
 
     @Autowired
-    public DevBuddyController(AiClient aiClient, CodeIndexService bikeService) {
+    public DevBuddyController(AiClient aiClient, CodeEmbeddingService bikeService) {
         this.aiClient = aiClient;
         this.bikeService = bikeService;
     }
@@ -30,10 +30,6 @@ public class DevBuddyController {
     }
 
 
-    @GetMapping("/ai/bike")
-    public Generation completeBike(@RequestParam(value = "message", defaultValue = "What bike is good for city commuting?") String message) {
-        return bikeService.generate(message);
-    }
 
 
 
