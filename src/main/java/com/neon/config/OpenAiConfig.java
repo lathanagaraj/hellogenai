@@ -1,8 +1,11 @@
 package com.neon.config;
 
 
-import org.springframework.ai.autoconfigure.openai.OpenAiProperties;
+import com.azure.ai.openai.OpenAIClient;
+import com.azure.ai.openai.OpenAIClientBuilder;
+import com.azure.core.credential.AzureKeyCredential;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -65,5 +68,12 @@ public class OpenAiConfig {
     }
 
 
+    @Bean
+    public OpenAIClient openAIClient() {
+        return new OpenAIClientBuilder()
+                .endpoint(endpoint)
+                .credential(new AzureKeyCredential(apiKey))
+                .buildClient();
+    }
 
 }

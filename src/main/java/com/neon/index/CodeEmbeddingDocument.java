@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Version;
 
 import java.util.List;
 
-@Container(containerName = "neon-cosmosb-container")
+@Container(containerName = "neon-cosmosdb-container")
 
 public class CodeEmbeddingDocument {
 
@@ -15,9 +15,23 @@ public class CodeEmbeddingDocument {
     private String chunkId;
 
     @PartitionKey
+    private String artifactId;
+
+    @Version
+    private String _etag;
+
+
     private String codeChunk;
 
-    private List<Double> embedding;
+    public float[] getEmbedding() {
+        return embedding;
+    }
+
+    public void setEmbedding(float[] embedding) {
+        this.embedding = embedding;
+    }
+
+    private float[] embedding;
 
     public String getChunkId() {
         return chunkId;
@@ -35,13 +49,7 @@ public class CodeEmbeddingDocument {
         this.codeChunk = codeChunk;
     }
 
-    public List<Double> getEmbedding() {
-        return embedding;
-    }
 
-    public void setEmbedding(List<Double> embedding) {
-        this.embedding = embedding;
-    }
 
     public String get_etag() {
         return _etag;
@@ -51,11 +59,19 @@ public class CodeEmbeddingDocument {
         this._etag = _etag;
     }
 
-    @Version
-    private String _etag;
+    public String getArtifactId() {
+        return artifactId;
+    }
 
-    public CodeEmbeddingDocument(String codeChunk, List<Double> embedding) {
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+
+
+    public CodeEmbeddingDocument(String artifactId, String codeChunk, float[] embedding) {
         this.chunkId = java.util.UUID.randomUUID().toString();
+        this.artifactId = artifactId;
         this.codeChunk = codeChunk;
         this.embedding = embedding;
     }

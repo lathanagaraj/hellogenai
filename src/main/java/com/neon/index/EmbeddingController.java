@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/embedding")
 public class EmbeddingController {
@@ -19,7 +21,7 @@ public class EmbeddingController {
 
 
     @PostMapping("/index")
-    public String generateCode() {
+    public String generateCode() throws IOException {
         embeddingService.processRepositories();
         return "Embedding generated";
     }

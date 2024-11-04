@@ -61,6 +61,21 @@ resource "azurerm_cognitive_deployment" "embedding-model" {
   }
 }
 
+#Create a new deployment for davinci-002. This is good for code embeddings
+resource "azurerm_cognitive_deployment" "embedding-model" {
+  name                 = "embedding-model"
+  cognitive_account_id = azurerm_cognitive_account.neon-account.id
+  model {
+    format  = "OpenAI"
+    name    = "text-embedding-ada-002"
+    version = "2"
+  }
+
+  sku {
+    name = "Standard"
+  }
+}
+
 
 #Create cosmosdb account
 resource "azurerm_cosmosdb_account" "neon-cosmosdb" {
@@ -92,12 +107,12 @@ resource "azurerm_cosmosdb_sql_database" "neon-cosmosdb-database" {
 }
 
 #Create cosmosdb container
-resource "azurerm_cosmosdb_sql_container" "neon-cosmosb-container" {
+resource "azurerm_cosmosdb_sql_container" "neon-cosmosdb-container" {
   name                = "neon-cosmosb-container"
   resource_group_name = azurerm_resource_group.neon-genaihack.name
   account_name        = azurerm_cosmosdb_account.neon-cosmosdb.name
   database_name       = azurerm_cosmosdb_sql_database.neon-cosmosdb-database.name
-  partition_key_paths  = ["/codeChunk"] # Partition based on codeChunk
+  partition_key_paths  = ["/artifactId"] # Partition based on codeChunk
 
   indexing_policy {
     indexing_mode = "consistent"
@@ -117,3 +132,5 @@ output "cosmosdb_primary_key" {
   value     = azurerm_cosmosdb_account.neon-cosmosdb.primary_key
   sensitive = true
 }
+
+

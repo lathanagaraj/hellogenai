@@ -3,19 +3,12 @@ package com.neon.generate;
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
 import com.neon.config.OpenAiConfig;
-import org.springframework.ai.client.AiResponse;
-import org.springframework.ai.prompt.Prompt;
-import org.springframework.ai.prompt.SystemPromptTemplate;
-import org.springframework.ai.prompt.messages.UserMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import com.azure.ai.openai.OpenAIClient;
-import org.springframework.ai.azure.openai.client.AzureOpenAiClient;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class CodeGeneratorService {
@@ -37,18 +30,19 @@ public class CodeGeneratorService {
                 .endpoint(openAiConfig.getEndpoint())
                 .buildClient();
 
-        AzureOpenAiClient azureOpenAiClient = new AzureOpenAiClient(openAIClient);
-        azureOpenAiClient.setModel(openAiConfig.getCodegen().getOptions().getModel());
+//        AzureOpenAiChatModel azureOpenAiClient = new AzureOpenAiChatModel(openAIClient);
+//        azureOpenAiClient.setModel(openAiConfig.getCodegen().getOptions().getModel());
+//
+//
+//
+//        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(promptTemplate);
+//        UserMessage userMessage = new UserMessage(message);
+//        Prompt prompt = new Prompt(List.of(systemPromptTemplate.createMessage(), userMessage));
+//
+//        AiResponse response = azureOpenAiClient.generate(prompt);
+//        return response.getGeneration().getText();
 
-
-
-        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(promptTemplate);
-        UserMessage userMessage = new UserMessage(message);
-        Prompt prompt = new Prompt(List.of(systemPromptTemplate.createMessage(), userMessage));
-
-        AiResponse response = azureOpenAiClient.generate(prompt);
-        return response.getGeneration().getText();
-
+        return "Code generation is not implemented yet";
     }
 
 

@@ -6,6 +6,7 @@ import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
+import com.azure.cosmos.models.*;
 
 @Configuration
 @EnableCosmosRepositories(basePackages = "com.neon.index")
